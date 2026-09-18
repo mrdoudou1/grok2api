@@ -476,6 +476,10 @@ func (m *Manager) AcquireCredential(ctx context.Context, scope domain.Scope, cre
 		identity = "sso_" + security.HashToken(token)[:32]
 	}
 	ctx = WithAccountIdentity(ctx, identity)
+	if rotationKey := egressRotationFromContext(ctx); rotationKey != "" {
+		lease, _, err := m.acquire(ctx, scope, rotationKey, true, credential.EncryptedCloudflareCookie, 0)
+		return lease, err
+	}
 	ctx = WithEgressNode(ctx, credential.EgressNodeID)
 	lease, _, err := m.acquire(ctx, scope, strconv.FormatUint(credential.ID, 10), true, credential.EncryptedCloudflareCookie, credential.EgressNodeID)
 	return lease, err

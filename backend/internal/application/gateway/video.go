@@ -602,6 +602,7 @@ func (s *Service) runVideoJob(parent context.Context, job media.Job, route model
 		lastProgress := job.Progress
 		result, err = adapter.GenerateVideo(ctx, provider.VideoRequest{
 			Credential: lease.Credential, Billing: lease.Billing, JobID: job.ID, Model: route.UpstreamModel,
+			EgressRotationKey: fmt.Sprintf("video:%s:%d", job.ID, attempt),
 			Operation: operation,
 			Prompt:    job.Prompt, Duration: duration, AspectRatio: aspectRatio, Resolution: resolution,
 			ImageURL: imageURL, ReferenceURLs: referenceURLs, ReferenceAudios: referenceAudios, VideoURL: videoURL,

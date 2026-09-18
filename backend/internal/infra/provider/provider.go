@@ -552,6 +552,8 @@ const (
 
 type VideoRequest struct {
 	Credential account.Credential
+	// EgressRotationKey asks the Web transport to select a healthy proxy-pool node for this attempt.
+	EgressRotationKey string
 	// Billing is used only to determine XAI eligibility in Build auto mode; nil means the account tier is unknown.
 	Billing *account.Billing
 	// JobID binds the local video job to XAI ZDR upload tickets and result assets.

@@ -29,6 +29,7 @@ type Trace struct {
 type traceContextKey struct{}
 type accountContextKey struct{}
 type egressNodeContextKey struct{}
+type egressRotationContextKey struct{}
 type qualityProbeContextKey struct{}
 
 // WithAccount passes a stable Provider account identity to the egress layer. It is used only to render
@@ -61,6 +62,18 @@ func WithEgressNode(ctx context.Context, nodeID uint64) context.Context {
 		return ctx
 	}
 	return context.WithValue(ctx, egressNodeContextKey{}, nodeID)
+}
+
+// WithEgressRotation requests pool selection for a request attempt.
+func WithEgressRotation(ctx context.Context, key string) context.Context {
+	if ctx == nil || strings.TrimSpace(key) == "" { return ctx }
+	return context.WithValue(ctx, egressRotationContextKey{}, strings.TrimSpace(key))
+}
+
+func egressRotationFromContext(ctx context.Context) string {
+	if ctx == nil { return "" }
+	value, _ := ctx.Value(egressRotationContextKey{}).(string)
+	return strings.TrimSpace(value)
 }
 
 func egressNodeFromContext(ctx context.Context) uint64 {
